@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Web Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #fff;
+            background-color: #000;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .logo  {
+    width: 150px;  /* Set desired width */
+    height: 100px; /* Set desired height */
+}
+
+        header {
+            background-color: #FFD700; /* Yellow color */
+            color: #000;
+            padding: 10px 0;
+            text-align: center;
+            border-bottom: 5px solid #000; /* Black border for a more defined header */
+        }
+
+        header h1 {
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        section {
+            padding: 20px;
+            margin: 10px;
+        }
+
+        section h2 {
+            color: #FFD700; /* Yellow color */
+            border-bottom: 2px solid #FFD700; /* Underline effect for headers */
+            padding-bottom: 10px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .button-container a {
+            display: inline-block;
+            background-color: #FFD700; /* Yellow background */
+            color: #000;
+            text-decoration: none;
+            padding: 15px 30px;
+            margin: 0 10px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .button-container a:hover {
+            background-color: #FFC107; /* Slightly darker yellow */
+            transform: scale(1.05);
+        }
+
+        footer {
+            background-color: #FFD700; /* Yellow color */
+            color: #000;
+            text-align: center;
+            padding: 10px 0;
+            border-top: 5px solid #000; /* Black border for a more defined footer */
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Responsive design for different devices */
+        @media (max-width: 600px) {
+            nav ul li {
+                display: block;
+                margin: 10px 0;
+            }
+
+            .button-container a {
+                display: block;
+                margin: 10px auto;
+                width: 80%;
+                max-width: 300px;
+            }
+        }
+
+        .logo {
+            width: 50px;
+            height: auto;
+            vertical-align: middle;
+        }
+
+        .apple-logo {
+            display: none;
+        }
+
+        .android-logo {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .apple-logo {
+                display: inline;
+            }
+        }
+
+        @media (min-width: 601px) {
+            .android-logo {
+                display: inline;
+            }
+        }
+
+        /* Floating button styles */
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #FFD700; /* Yellow background */
+            color: #000;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-size: 24px;
+            text-align: center;
+            line-height: 60px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .floating-btn:hover {
+            background-color: #FFC107; /* Slightly darker yellow */
+            transform: scale(1.1);
+        }
+
+        .floating-btn.up::before {
+            content: '▲'; /* Up arrow */
+        }
+
+        .floating-btn.down::before {
+            content: '▼'; /* Down arrow */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Ibnu Taemiyah</h1>
+        
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#about-us">About Us</a></li>
+                <li><a href="#why-choose-us">Why Choose Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="https://gomytech.github.io/ibnu-taemiyyah-teacher/">Teachers Page</a></li>
+                
+            </ul>
+        </nav>
+
+    </header>
+    
+    <section class="button-container">
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+    </section>
+    <section id="home">
+        <h2>Welcome to Ibnu Taemiyah</h2>
+        <p>Welcome to Ibnu Taemiyah website. Here you will find information about our school, latest news, and more.</p>
+    </section>
+    
+    <section id="blog">
+        <h2>Blog</h2>
+        <p>Check out our latest posts and updates on various topics related to education and school activities.</p>
+    </section>
+    
+    <section id="about-us">
+        <h2>About Us</h2>
+        <p>Welcome to [Ibnu Taemiyah], where we blend the richness of Islamic values with the dynamism of Western education to nurture well-rounded, forward-thinking students.
+
+            At [Ibnu Taemiyah], we are committed to providing a comprehensive education that prepares students not only for academic excellence but also for personal growth and ethical leadership. Our curriculum is thoughtfully designed to integrate Islamic teachings with modern Western education, offering a balanced approach that respects cultural heritage while embracing global perspectives.</p>
+    </section>
+    
+    <section id="why-choose-us">
+        <h2>Why Choose Us</h2>
+        <p>Holistic Education: We offer a unique curriculum that combines the rich traditions of Islamic education with the rigorous demands of Western academic programs. This dual approach ensures that students receive a comprehensive education that respects and integrates their cultural and religious heritage with modern knowledge.
+
+            Qualified Educators: Our team of experienced and dedicated educators includes both Islamic scholars and skilled academic teachers. They are committed to providing high-quality instruction and fostering a supportive learning environment.
+            
+            Character Development: We place a strong emphasis on character education, encouraging students to develop strong ethical values, leadership skills, and a sense of responsibility. Our programs are designed to build confidence, integrity, and resilience.
+            
+            Innovative Learning Environment: Our school features state-of-the-art facilities and resources that enhance the learning experience. From modern classrooms to specialized laboratories and libraries, we are committed to creating an environment where students can thrive academically and personally.
+            
+            Community and Support: We believe in the importance of a supportive school community. Our school fosters strong relationships among students, parents, and staff, ensuring that every child receives the guidance and encouragement they need to succeed.
+            
+            Extracurricular Activities: Beyond academics, we offer a wide range of extracurricular activities that allow students to explore their interests, develop new skills, and build lasting friendships.
+            
+            Join us at [Ibnu Taemiyah] and be part of a nurturing and dynamic educational environment where Islamic values and Western education come together to shape the leaders of tomorrow.</p>
+    </section>
+
+    <section id="contact">
+        <h2>Contact</h2>
+        <p>Get in touch with us through the following contact details.</p>
+    </section>
+    
+    <footer>
+        <p>&copy; 2024 Ibnu Taemiyyah. All rights reserved owned by ibnu taemiyyah and created by gomy tech.</p>
+    </footer>
+
+    <!-- Floating button -->
+    <button id="floatingBtn" class="floating-btn down"></button>
+
+    <script>
+        document.getElementById('floatingBtn').addEventListener('click', function() {
+            var btn = this;
+            if (btn.classList.contains('down')) {
+                btn.classList.remove('down');
+                btn.classList.add('up');
+                // Scroll up smoothly (optional)
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                btn.classList.remove('up');
+                btn.classList.add('down');
+                // Scroll down smoothly to the bottom (optional)
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+        });
+    </script>
+</body>
+</html>
