@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: yellow;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 2px solid yellow;
+            background-color: black;
+        }
+
+        h1 {
+            color: yellow;
+        }
+
+        .question p {
+            font-size: 1.2em;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        button {
+            background-color: yellow;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #f5c518;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Math Quiz</h1>
+        <form id="quizForm">
+            <div id="quizQuestions"></div>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const questions = [
+                { question: 'What is 5 + 7?', options: [10, 11, 12, 13], correct: 12 },
+                { question: 'What is 8 - 3?', options: [5, 6, 7, 8], correct: 5 },
+                { question: 'What is 6 x 4?', options: [20, 24, 28, 32], correct: 24 },
+                { question: 'What is 9 ÷ 3?', options: [2, 3, 4, 5], correct: 3 },
+                { question: 'What is 7 + 6?', options: [12, 13, 14, 15], correct: 13 },
+                { question: 'What is 10 - 4?', options: [5, 6, 7, 8], correct: 6 },
+                { question: 'What is 12 x 2?', options: [22, 24, 26, 28], correct: 24 },
+                { question: 'What is 18 ÷ 6?', options: [2, 3, 4, 5], correct: 3 },
+                { question: 'What is 15 + 5?', options: [20, 21, 22, 23], correct: 20 },
+                { question: 'What is 14 - 7?', options: [6, 7, 8, 9], correct: 7 },
+                { question: 'What is 5 x 5?', options: [20, 21, 22, 25], correct: 25 },
+                { question: 'What is 30 ÷ 5?', options: [5, 6, 7, 8], correct: 6 },
+                { question: 'What is 8 + 9?', options: [16, 17, 18, 19], correct: 17 },
+                { question: 'What is 7 x 3?', options: [20, 21, 22, 23], correct: 21 },
+                { question: 'What is 12 - 5?', options: [6, 7, 8, 9], correct: 7 },
+                { question: 'What is 9 x 2?', options: [16, 17, 18, 19], correct: 18 },
+                { question: 'What is 21 ÷ 7?', options: [2, 3, 4, 5], correct: 3 },
+                { question: 'What is 11 + 6?', options: [16, 17, 18, 19], correct: 17 },
+                { question: 'What is 16 - 8?', options: [6, 7, 8, 9], correct: 8 },
+                { question: 'What is 14 x 2?', options: [26, 27, 28, 29], correct: 28 },
+                { question: 'What is 20 ÷ 4?', options: [4, 5, 6, 7], correct: 5 },
+            ];
+
+            const quizQuestionsDiv = document.getElementById('quizQuestions');
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                
+                let optionsHtml = '';
+                q.options.forEach(option => {
+                    optionsHtml += `
+                        <label>
+                            <input type="radio" name="question${index}" value="${option}">
+                            ${option}
+                        </label>
+                    `;
+                });
+                
+                questionDiv.innerHTML = `
+                    <p>${index + 1}. ${q.question}</p>
+                    ${optionsHtml}
+                `;
+                
+                quizQuestionsDiv.appendChild(questionDiv);
+            });
+
+            document.getElementById('quizForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                let score = 0;
+                
+                questions.forEach((q, index) => {
+                    const selectedAnswer = document.querySelector(`input[name="question${index}"]:checked`);
+                    
+                    if (selectedAnswer) {
+                        if (parseInt(selectedAnswer.value) === q.correct) {
+                            score++;
+                        }
+                    }
+                });
+                
+                document.getElementById('result').innerText = `You scored ${score} out of ${questions.length}.`;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: yellow;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        button {
+            background-color: yellow;
+            color: black;
+            border: 1px solid black;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ffcc00;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .info-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background-color: #222;
+            padding: 10px;
+            border-radius: 8px;
+            width: 45%;
+            color: yellow;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: yellow;
+        }
+
+        .input-group input {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid yellow;
+            background-color: #444;
+            color: yellow;
+        }
+
+        #infoDisplay {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .info-item {
+            background-color: #444;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            color: yellow;
+        }
+
+        .hidden-info {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .password-group {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+        <button id="searchButton">Name Search</button>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- New containers for account details -->
+            <div class="info-container">
+                <div class="info-box">
+                    <h2>Account Details</h2>
+                    <p>Bank Name: XYZ Bank</p>
+                    <p>Account Number: 1234567890</p>
+                </div>
+                <div class="info-box">
+                    <h2>Student Information</h2>
+                    <p>Student Name: John Doe</p>
+                    <p>Bank Account Number: 0987654321</p>
+                </div>
+            <div class="info-box">
+                <p>1.Make payment before filling the info</p>
+                <p>2.fill in all the form and the account number bank account means the account you use to make the transaction </p>
+                <p>3. After payment is confirmed you child will be given a reciept  or you might see notice on you account
+            </div>
+            <form id="infoForm">
+                <div class="input-group">
+                    <label for="studentName">Student Name:</label>
+                    <input type="text" id="studentName" name="studentName" required>
+                </div>    
+                <div class="input-group">
+                    <label for="bankAccountNumber">Bank Account Number:</label>
+                    <input type="text" id="bankAccountNumber" name="bankAccountNumber" required>
+                </div>
+                <div class="input-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" name="amount" required>
+                </div>
+                <div class="input-group">
+                    <label for="account">Account:</label>
+                    <input type="text" id="account" name="account" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="receipt">Upload Receipt:</label>
+                    <input type="file" id="receipt" name="receipt" accept="image/*">
+                </div>
+                <button type="submit" id="submitButton">Submit</button>
+            </form>
+            <div id="infoDisplay"></div>
+        </div>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const infoForm = document.getElementById('infoForm');
+            const infoDisplay = document.getElementById('infoDisplay');
+            const searchButton = document.getElementById('searchButton');
+            const password = '142512'; // Password for showing/hiding info
+            let infoList = JSON.parse(localStorage.getItem('infoList')) || [];
+
+            function updateDisplay() {
+                infoDisplay.innerHTML = '';
+                infoList.forEach((info, index) => {
+                    const infoItem = document.createElement('div');
+                    infoItem.className = 'info-item';
+                    infoItem.innerHTML = `
+                        <p>Student Name: ${info.studentName}</p>
+                        <div class="hidden-info" id="hiddenInfo${index}">
+                            <p>Bank Account Number: ${info.bankAccountNumber}</p>
+                            <p>Amount: ${info.amount}</p>
+                            <p>Account: ${info.account}</p>
+                            <p>Email: ${info.email}</p>
+                            <img src="${info.receiptURL}" alt="Receipt" style="width: 100px; height: auto;">
+                        </div>
+                        <div class="password-group">
+                            <input type="password" id="password${index}" placeholder="Enter password">
+                            <button class="toggleButton" data-index="${index}">Show/Hide Details</button>
+                        </div>
+                        <button class="deleteButton" data-index="${index}">Delete</button>
+                        <button class="acceptButton" data-index="${index}">Accept</button>
+                    `;
+                    infoDisplay.appendChild(infoItem);
+                });
+
+                // Attach event listeners to buttons
+                document.querySelectorAll('.toggleButton').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const index = e.target.dataset.index;
+                        const hiddenInfo = document.getElementById(`hiddenInfo${index}`);
+                        const passwordInput = document.getElementById(`password${index}`);
+                        if (passwordInput.value === password) {
+                            hiddenInfo.style.display = hiddenInfo.style.display === 'none' ? 'block' : 'none';
+                        } else {
+                            alert('Incorrect password!');
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.deleteButton').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const index = e.target.dataset.index;
+                        deleteInfo(index);
+                    });
+                });
+
+                document.querySelectorAll('.acceptButton').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const index = e.target.dataset.index;
+                        acceptInfo(index);
+                    });
+                });
+            }
+
+            function deleteInfo(index) {
+                const passwordInput = document.getElementById(`password${index}`);
+                if (passwordInput.value === password) {
+                    infoList.splice(index, 1);
+                    localStorage.setItem('infoList', JSON.stringify(infoList));
+                    updateDisplay();
+                } else {
+                    alert('Incorrect password!');
+                }
+            }
+
+            function acceptInfo(index) {
+                const passwordInput = document.getElementById(`password${index}`);
+                if (passwordInput.value === password) {
+                    infoList[index].accepted = true;
+                    localStorage.setItem('infoList', JSON.stringify(infoList));
+                    updateDisplay();
+                } else {
+                    alert('Incorrect password!');
+                }
+            }
+
+            function searchInfo() {
+                const name = prompt("Enter the name to search:");
+                const foundInfo = infoList.filter(info => info.studentName.toLowerCase() === name.toLowerCase());
+                if (foundInfo.length > 0) {
+                    alert("Found: " + foundInfo.map(info => `Student Name: ${info.studentName}, Bank Account Number: ${info.bankAccountNumber}, Amount: ${info.amount}, Account: ${info.account}, Email: ${info.email}`).join('\n'));
+                } else {
+                    alert("No information found.");
+                }
+            }
+
+            infoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (infoList.length < 50) {
+                    const receiptFile = e.target.receipt.files[0];
+                    const receiptURL = receiptFile ? URL.createObjectURL(receiptFile) : '';
+
+                    const newInfo = {
+                        studentName: e.target.studentName.value,
+                        bankAccountNumber: e.target.bankAccountNumber.value,
+                        amount: e.target.amount.value,
+                        account: e.target.account.value,
+                        email: e.target.email.value,
+                        receiptURL: receiptURL,
+                        accepted: false
+                    };
+                    infoList.push(newInfo);
+                    localStorage.setItem('infoList', JSON.stringify(infoList));
+                    updateDisplay();
+                    e.target.reset();
+                } else {
+                    alert('Registration limit reached.');
+                }
+            });
+
+            searchButton.addEventListener('click', searchInfo);
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>
