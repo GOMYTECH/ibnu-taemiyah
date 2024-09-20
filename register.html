@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Registration</title>
     <style>
-        /* Reset some default styles */
         body, h2, p, input, label, button {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Basic page styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #000;
@@ -20,10 +18,9 @@
             padding: 20px;
         }
 
-        /* Header styling */
         header {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             margin-bottom: 20px;
         }
 
@@ -32,7 +29,8 @@
             border: 2px solid #f7c600;
             padding: 20px;
             border-radius: 8px;
-            width: 45%;
+            width: 100%;
+            margin-bottom: 10px;
         }
 
         h2 {
@@ -45,7 +43,6 @@
             margin-bottom: 5px;
         }
 
-        /* Form styling */
         .registration-form {
             background-color: #222;
             border: 2px solid #f7c600;
@@ -98,11 +95,11 @@
         }
 
         .info-content {
-            display: none;
             color: #fff;
+            display: none; /* Hide details initially */
         }
 
-        .show-button, .hide-button, .delete-button {
+        .show-button, .delete-button {
             position: absolute;
             top: 15px;
             right: 15px;
@@ -114,60 +111,59 @@
             cursor: pointer;
         }
 
-        .hide-button {
-            right: 85px; /* Adjust position to avoid overlap with other buttons */
-        }
-
         .delete-button {
             background-color: #f77;
             right: 15px;
-            top: auto;
             bottom: 15px;
+            top: auto;
         }
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            align-items: center;
-            justify-content: center;
+        .file-preview {
+            margin-top: 10px;
         }
 
-        .modal-content {
-            background-color: #222;
-            padding: 20px;
-            border-radius: 8px;
-            width: 300px;
-            text-align: center;
+        .file-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            display: block;
+            margin-bottom: 5px;
         }
 
-        .modal-content input {
-            width: 80%;
-            margin-bottom: 10px;
+        .download-link {
+            display: block;
+            margin-top: 5px;
+            color: #f7c600;
+            text-decoration: underline;
+        }
+
+        .download-link:hover {
+            color: #e0b900;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-container input {
+            padding: 10px;
+            border: 1px solid #f7c600;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
         }
     </style>
 </head>
 <body>
     <header>
         <div class="bank-container">
-                        <h2>Bank Account:jaiz</h2>
-            <p>Account Name: Ibnu taemiyah</p>
+            <h2>Bank Account: Jaiz</h2>
+            <p>Account Name: Ibnu Taemiyah</p>
             <p>Account Number: 0008716334</p>
         </div>
         <div class="bank-container">
-                        <h2>Bank Account:jaiz</h2>
-            <p>Account Name: Ibnu taemiyah</p>
-            <p>Account Number: 0008716334</p
-        </div>
-        <div class="bank-container">
             <h2>Instruction</h2>
-            <p>Make payment before felling the info</p>
-            <p>Fil as it is on the school form</p>
-            
+            <p>Make payment before filling the info</p>
+            <p>Fill as it is on the school form</p>
         </div>
     </header>
 
@@ -201,18 +197,17 @@
             <input type="file" id="profile-picture" name="profile-picture" accept="image/*" required>
             
             <label for="receipt">Upload Receipt:</label>
-            <input type="file" id="receipt" name="receipt" accept="application/pdf, image/*" required>
+            <input type="file" id="receipt" name="receipt" accept="image/*" required>
             
             <label for="uloa-school-form">Upload ULOA School Form:</label>
-            <input type="file" id="uloa-school-form" name="uloa-school-form" accept="application/pdf, image/*" required>
+            <input type="file" id="uloa-school-form" name="uloa-school-form" accept="image/*" required>
             
             <button type="button" onclick="addRegistration()">Submit</button>
         </form>
 
-        <!-- Search and Numbering -->
         <div class="search-container">
             <input type="text" id="search" placeholder="Search Name...">
-            <button type="button" id="search-button">Search</button>
+            <button type="button" id="search-button" onclick="searchRegistration()">Search</button>
         </div>
 
         <div id="registrations">
@@ -220,22 +215,34 @@
         </div>
     </main>
 
-    <!-- Modal for password confirmation -->
-    <div id="password-modal" class="modal">
-        <div class="modal-content">
-            <h3>Enter Password</h3>
-            <input type="password" id="password-input" placeholder="Enter password">
-            <button onclick="confirmAction()">Confirm</button>
-            <button onclick="closeModal()">Cancel</button>
-        </div>
-    </div>
-
     <script>
-        let currentActionId = '';
-        let currentActionType = '';
+        const REVEAL_PASSWORD_KEY = 'revealPassword';
+        const DELETE_PASSWORD_KEY = 'deletePassword';
+
+        const DEFAULT_REVEAL_PASSWORD = '142512';
+        const DEFAULT_DELETE_PASSWORD = '142512';
+
+        let registrations = JSON.parse(localStorage.getItem('registrations')) || [];
+
+        // Initialize passwords in local storage if not already set
+        window.onload = () => {
+            if (!localStorage.getItem(REVEAL_PASSWORD_KEY)) {
+                localStorage.setItem(REVEAL_PASSWORD_KEY, DEFAULT_REVEAL_PASSWORD);
+            }
+            if (!localStorage.getItem(DELETE_PASSWORD_KEY)) {
+                localStorage.setItem(DELETE_PASSWORD_KEY, DEFAULT_DELETE_PASSWORD);
+            }
+            loadRegistrations();
+        };
+
+        function loadRegistrations() {
+            document.getElementById('registrations').innerHTML = '';
+            registrations.forEach(reg => {
+                addRegistrationToDOM(reg);
+            });
+        }
 
         function addRegistration() {
-            // Get form values
             const studentName = document.getElementById('student-name').value;
             const age = document.getElementById('age').value;
             const dob = document.getElementById('dob').value;
@@ -244,124 +251,132 @@
             const parentNumber = document.getElementById('parent-number').value;
             const stateOfOrigin = document.getElementById('state-of-origin').value;
             const nationality = document.getElementById('nationality').value;
+
             const profilePicture = document.getElementById('profile-picture').files[0];
             const receipt = document.getElementById('receipt').files[0];
             const uloaSchoolForm = document.getElementById('uloa-school-form').files[0];
 
-            if (studentName === '' || age === '' || dob === '' || parentName === '' || studentNumber === '' || parentNumber === '' || stateOfOrigin === '' || nationality === '' || !profilePicture || !receipt || !uloaSchoolForm) {
-                alert('Please fill in all fields and upload all files.');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(event) {
+            const profilePictureReader = new FileReader();
+            profilePictureReader.onload = function (event) {
                 const profilePictureDataUrl = event.target.result;
-                const registrationContainer = document.createElement('div');
-                registrationContainer.className = 'info-container';
-                const registrationId = `info${document.querySelectorAll('.info-container').length + 1}`;
-                registrationContainer.id = registrationId;
 
-                registrationContainer.innerHTML = `
-                    <button class="show-button" onclick="showInfo('${registrationId}')">Show</button>
-                    <button class="hide-button" onclick="hideInfo('${registrationId}')" style="display: none;">Hide</button>
-                    <button class="delete-button" onclick="confirmAction('${registrationId}', 'delete')">Delete</button>
-                    <div class="info-content">
-                        <p>Student Name: ${studentName}</p>
-                        <p>Age: ${age}</p>
-                        <p>Date of Birth: ${dob}</p>
-                        <p>Parent Name: ${parentName}</p>
-                        <p>Student Number: ${studentNumber}</p>
-                        <p>Parent Number: ${parentNumber}</p>
-                        <p>State of Origin: ${stateOfOrigin}</p>
-                        <p>Nationality: ${nationality}</p>
-                        <p>Profile Picture:</p>
-                        <img src="${profilePictureDataUrl}" alt="Profile Picture" style="max-width: 100%; height: auto;">
-                        <p>Receipt:</p>
-                        <img src="${URL.createObjectURL(receipt)}" alt="Receipt" style="max-width: 100%; height: auto;">
-                        <p>ULOA School Form:</p>
-                        <img src="${URL.createObjectURL(uloaSchoolForm)}" alt="ULOA School Form" style="max-width: 100%; height: auto;">
-                    </div>
-                `;
+                const receiptReader = new FileReader();
+                receiptReader.onload = function (event) {
+                    const receiptDataUrl = event.target.result;
 
-                document.getElementById('registrations').appendChild(registrationContainer);
+                    const uloaSchoolFormReader = new FileReader();
+                    uloaSchoolFormReader.onload = function (event) {
+                        const uloaSchoolFormDataUrl = event.target.result;
 
-                // Clear form fields
-                document.getElementById('registration-form').reset();
+                        const registration = {
+                            id: Date.now(),
+                            studentName,
+                            age,
+                            dob,
+                            parentName,
+                            studentNumber,
+                            parentNumber,
+                            stateOfOrigin,
+                            nationality,
+                            profilePicture: profilePictureDataUrl,
+                            receipt: receiptDataUrl,
+                            uloaSchoolForm: uloaSchoolFormDataUrl,
+                            uploadedAt: new Date().toLocaleString()
+                        };
+
+                        registrations.push(registration);
+                        localStorage.setItem('registrations', JSON.stringify(registrations));
+
+                        addRegistrationToDOM(registration);
+                        document.getElementById('registration-form').reset();
+                    };
+
+                    uloaSchoolFormReader.readAsDataURL(uloaSchoolForm);
+                };
+
+                receiptReader.readAsDataURL(receipt);
             };
-            
-            reader.readAsDataURL(profilePicture);
+
+            profilePictureReader.readAsDataURL(profilePicture);
         }
 
-        function showInfo(id) {
+        function addRegistrationToDOM(reg) {
+            const registrationContainer = document.createElement('div');
+            registrationContainer.classList.add('info-container');
+            registrationContainer.id = reg.id;
+
+            registrationContainer.innerHTML = `
+                <p><strong>Name:</strong> ${reg.studentName}</p>
+                <p><strong>Parent:</strong> ${reg.parentName}</p>
+                <button class="show-button" onclick="revealDetails(${reg.id})">Reveal</button>
+                <button class="delete-button" onclick="deleteRegistration(${reg.id})">Delete</button>
+                <div class="info-content">
+                    <p><strong>Age:</strong> ${reg.age}</p>
+                    <p><strong>Date of Birth:</strong> ${reg.dob}</p>
+                    <p><strong>Student Number:</strong> ${reg.studentNumber}</p>
+                    <p><strong>Parent Number:</strong> ${reg.parentNumber}</p>
+                    <p><strong>State of Origin:</strong> ${reg.stateOfOrigin}</p>
+                    <p><strong>Nationality:</strong> ${reg.nationality}</p>
+                    <div class="file-preview">
+                        <p><strong>Profile Picture:</strong></p>
+                        <img src="${reg.profilePicture}" alt="Profile Picture">
+                        <p><strong>Receipt:</strong></p>
+                        <img src="${reg.receipt}" alt="Receipt">
+                        <p><strong>ULOA School Form:</strong></p>
+                        <img src="${reg.uloaSchoolForm}" alt="ULOA School Form">
+                    </div>
+                    <p><strong>Uploaded At:</strong> ${reg.uploadedAt}</p>
+                </div>
+            `;
+
+            document.getElementById('registrations').appendChild(registrationContainer);
+        }
+
+        function revealDetails(id) {
             const container = document.getElementById(id);
-            const content = container.querySelector('.info-content');
-            const showButton = container.querySelector('.show-button');
-            const hideButton = container.querySelector('.hide-button');
+            const infoContent = container.querySelector('.info-content');
+            const revealButton = container.querySelector('.show-button');
 
-            if (content.style.display === 'none' || content.style.display === '') {
-                currentActionId = id;
-                currentActionType = 'show';
-                document.getElementById('password-modal').style.display = 'flex';
-            }
-        }
-
-        function hideInfo(id) {
-            const container = document.getElementById(id);
-            const content = container.querySelector('.info-content');
-            const showButton = container.querySelector('.show-button');
-            const hideButton = container.querySelector('.hide-button');
-
-            if (content.style.display === 'block') {
-                currentActionId = id;
-                currentActionType = 'hide';
-                document.getElementById('password-modal').style.display = 'flex';
-            }
-        }
-
-        function confirmAction() {
-            const password = document.getElementById('password-input').value;
-            if (password === '1425') {
-                const container = document.getElementById(currentActionId);
-                const content = container.querySelector('.info-content');
-                const showButton = container.querySelector('.show-button');
-                const hideButton = container.querySelector('.hide-button');
-
-                if (currentActionType === 'show') {
-                    content.style.display = 'block';
-                    showButton.style.display = 'none';
-                    hideButton.style.display = 'inline-block';
-                } else if (currentActionType === 'hide') {
-                    content.style.display = 'none';
-                    showButton.style.display = 'inline-block';
-                    hideButton.style.display = 'none';
-                } else if (currentActionType === 'delete') {
-                    container.remove();
+            const enteredPassword = prompt("Enter password to reveal details:");
+            if (enteredPassword === localStorage.getItem(REVEAL_PASSWORD_KEY)) {
+                if (infoContent.style.display === 'none' || !infoContent.style.display) {
+                    infoContent.style.display = 'block';
+                    revealButton.textContent = 'Hide Details';
+                } else {
+                    infoContent.style.display = 'none';
+                    revealButton.textContent = 'Reveal';
                 }
-                
-                closeModal();
             } else {
-                alert('Incorrect password');
+                alert('Incorrect password!');
             }
         }
 
-        function closeModal() {
-            document.getElementById('password-modal').style.display = 'none';
-            document.getElementById('password-input').value = '';
+        function deleteRegistration(id) {
+            const enteredPassword = prompt("Enter password to delete:");
+            if (enteredPassword === localStorage.getItem(DELETE_PASSWORD_KEY)) {
+                const container = document.getElementById(id);
+                container.remove();
+
+                registrations = registrations.filter(reg => reg.id !== id);
+                localStorage.setItem('registrations', JSON.stringify(registrations));
+            } else {
+                alert('Incorrect password!');
+            }
         }
 
-        // Basic search functionality (for demonstration purposes)
-        document.getElementById('search-button').addEventListener('click', function() {
-            const searchValue = document.getElementById('search').value.toLowerCase();
-            const infoContainers = document.querySelectorAll('.info-container');
-            infoContainers.forEach(container => {
-                const name = container.querySelector('.info-content p').textContent.toLowerCase();
-                if (name.includes(searchValue)) {
+        function searchRegistration() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const registrationContainers = document.querySelectorAll('.info-container');
+
+            registrationContainers.forEach(container => {
+                const studentName = container.querySelector('p').textContent.toLowerCase();
+                if (studentName.includes(searchTerm)) {
                     container.style.display = 'block';
                 } else {
                     container.style.display = 'none';
                 }
             });
-        });
+        }
     </script>
 </body>
 </html>
